@@ -39,6 +39,21 @@ if (-not $hotkeysConfig) {
     }
 }
 
+# --- Remove Zipline custom uploader from UploadersConfig.json ---
+$sharexDir = Split-Path $hotkeysConfig -Parent
+$uploadersConfigPath = Join-Path $sharexDir "UploadersConfig.json"
+if (Test-Path $uploadersConfigPath) {
+    Copy-Item $uploadersConfigPath "$uploadersConfigPath.bak" -Force
+    $uploadersConfig = Get-Content $uploadersConfigPath -Raw | ConvertFrom-Json
+    $beforeUploaders = @($uploadersConfig.CustomUploadersList).Count
+    $uploadersConfig.CustomUploadersList = @($uploadersConfig.CustomUploadersList | Where-Object { $_.Name -ne "clip2path-zipline" })
+    $removedUploaders = $beforeUploaders - @($uploadersConfig.CustomUploadersList).Count
+    if ($removedUploaders -gt 0) {
+        $uploadersConfig | ConvertTo-Json -Depth 20 | Set-Content $uploadersConfigPath -Encoding UTF8
+        Write-Host "Removed Zipline custom uploader." -ForegroundColor Green
+    }
+}
+
 # --- Remove installed scripts from %APPDATA%\clip2path\ ---
 $installDir = Join-Path $env:APPDATA "clip2path"
 if (Test-Path $installDir) {

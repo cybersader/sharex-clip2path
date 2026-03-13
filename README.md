@@ -61,7 +61,52 @@ Re-run `install.ps1`. Your `config.json` is preserved.
 powershell.exe -ExecutionPolicy Bypass -File uninstall.ps1
 ```
 
-Removes ShareX hotkey entries and installed scripts from `%APPDATA%\clip2path\`.
+Removes all clip2path hotkey entries (including Zipline), the custom uploader, and installed scripts.
+
+## Zipline (Self-Hosted Image Upload)
+
+If you run [Zipline](https://github.com/diced/zipline) on your own server, you can add hotkeys that upload to Zipline and copy the private URL.
+
+### Script Setup
+
+```powershell
+# Close ShareX first
+
+# Basic (assign keys in ShareX afterward)
+powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "http://192.168.1.28:3000" -Token "your-upload-token"
+
+# With pre-assigned keys
+powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "http://192.168.1.28:3000" -Token "your-upload-token" -CaptureHotkey "Z, Shift, Alt" -ClipboardHotkey "X, Shift, Alt"
+
+# Also save locally
+powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "http://192.168.1.28:3000" -Token "your-upload-token" -SaveLocally
+```
+
+Get your upload token from Zipline's web UI → Settings → Upload Token.
+
+This adds two more hotkeys:
+
+| Entry | What it does |
+|-------|-------------|
+| **clip2path: zipline capture** | Capture region → upload to Zipline → URL to clipboard |
+| **clip2path: zipline clipboard** | Clipboard image → upload to Zipline → URL to clipboard |
+
+### Manual UI Setup (No Script)
+
+Zipline generates a ShareX config file you can import directly:
+
+1. Open Zipline → Settings → Generate Uploaders → ShareX → Download `.sxcu` file
+2. Double-click the `.sxcu` file — ShareX imports it automatically
+3. ShareX → Destinations → Custom Uploader Settings → verify it's there
+4. Create hotkeys manually: Hotkey Settings → Add → set Job + After Capture Tasks → Upload image to host
+
+### When to Use What
+
+| Want | Use |
+|------|-----|
+| Local file path for AI tools | `clip2path` hotkeys |
+| Private URL for sharing | `zipline` hotkeys |
+| Both at once | Run both installers, assign different keys |
 
 ## Configuration
 
@@ -131,16 +176,18 @@ ShareX can only call external programs — it can't embed custom logic inline. S
 Repository (disposable after install):
 ├── clip2path.ps1          # Path converter script (source copy)
 ├── config.example.json    # Default configuration template
-├── install.ps1            # Copies scripts to %APPDATA%, adds ShareX hotkeys
-├── uninstall.ps1          # Removes hotkeys + installed scripts
+├── install.ps1            # Local path hotkeys installer
+├── install-zipline.ps1    # Zipline upload hotkeys installer
+├── uninstall.ps1          # Removes everything
 └── README.md
 
 Installed to %APPDATA%\clip2path\ (permanent):
 ├── clip2path.ps1          # Path converter script (called by ShareX)
 └── config.json            # Your settings (preserved across upgrades)
 
-ShareX HotkeysConfig.json (just pointers):
-└── Hotkey entries that run: powershell.exe -File "%APPDATA%\clip2path\clip2path.ps1"
+ShareX configs (modified by installers):
+├── HotkeysConfig.json     # Hotkey entries (clip2path + zipline)
+└── UploadersConfig.json   # Zipline custom uploader definition
 ```
 
 You only need the repo again to upgrade (re-run `install.ps1`) or uninstall.
