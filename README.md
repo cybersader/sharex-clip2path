@@ -123,20 +123,27 @@ C:\Users\You\Documents\ShareX\Screenshots\screenshot.png
 
 Pure string manipulation — no WSL process needed.
 
-## Files
+## Files & Architecture
+
+ShareX can only call external programs — it can't embed custom logic inline. So the path conversion script needs to live on disk somewhere. The installer copies it to `%APPDATA%\clip2path\` (a stable location that survives repo deletion) and tells ShareX to call it from there.
 
 ```
-Repository:
-├── clip2path.ps1          # Path converter (ShareX action)
-├── config.example.json    # Default configuration
-├── install.ps1            # Installer
-├── uninstall.ps1          # Uninstaller
+Repository (disposable after install):
+├── clip2path.ps1          # Path converter script (source copy)
+├── config.example.json    # Default configuration template
+├── install.ps1            # Copies scripts to %APPDATA%, adds ShareX hotkeys
+├── uninstall.ps1          # Removes hotkeys + installed scripts
 └── README.md
 
-Installed to %APPDATA%\clip2path\:
-├── clip2path.ps1
-└── config.json
+Installed to %APPDATA%\clip2path\ (permanent):
+├── clip2path.ps1          # Path converter script (called by ShareX)
+└── config.json            # Your settings (preserved across upgrades)
+
+ShareX HotkeysConfig.json (just pointers):
+└── Hotkey entries that run: powershell.exe -File "%APPDATA%\clip2path\clip2path.ps1"
 ```
+
+You only need the repo again to upgrade (re-run `install.ps1`) or uninstall.
 
 ## Manual Setup
 
