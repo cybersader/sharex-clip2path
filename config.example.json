@@ -1,0 +1,5 @@
+{
+  "pathFormat": "wsl",
+  "showNotification": true,
+  "notificationDurationSeconds": 3
+}
