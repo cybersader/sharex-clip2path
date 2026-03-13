@@ -165,6 +165,45 @@ If you prefer configuring ShareX yourself instead of running the installer:
 4. Task Settings → Advanced → Enable **ProcessImagesDuringClipboardUpload**
 5. Actions → Add (same as capture above)
 
+## No PowerShell? (Corporate / Restricted Environments)
+
+If PowerShell is blocked by policy, you have two options:
+
+### Option A: Windows Path Only (No Scripts Needed)
+
+ShareX can copy the Windows file path natively — no scripts required.
+
+1. Hotkey Settings → Add → set key combo
+2. Gear icon → Job: `Capture region` (or `Clipboard upload` for clipboard)
+3. After Capture Tasks: check **Save image to file** + **Copy file path to clipboard** only
+4. For clipboard hotkey: Task Settings → Advanced → Enable **ProcessImagesDuringClipboardUpload**
+
+You'll get `C:\Users\...` in your clipboard. Convert to WSL manually if needed:
+```bash
+wslpath "C:\Users\You\Documents\ShareX\Screenshots\screenshot.png"
+# → /mnt/c/Users/You/Documents/ShareX/Screenshots/screenshot.png
+```
+
+### Option B: Batch File Fallback (WSL Conversion Without PowerShell)
+
+Create `clip2path.bat` anywhere on your machine:
+
+```batch
+@echo off
+set "p=%~1"
+set "p=%p:\=/%"
+set "d=%p:~0,1%"
+:: Lowercase the drive letter
+for %%a in (a b c d e f g h i j k l m n o p q r s t u v w x y z) do (
+    if /i "%d%"=="%%a" set "d=%%a"
+)
+echo /mnt/%d%%p:~2%| clip
+```
+
+Then in ShareX: Actions → Add → Path: `clip2path.bat`, Argument: `"$input"`, Hidden window: checked.
+
+Note: the batch file is uglier than PowerShell because batch has no native regex, but it works without any special permissions.
+
 ## Troubleshooting
 
 **Path not in clipboard:**
