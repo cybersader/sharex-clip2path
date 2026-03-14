@@ -53,6 +53,8 @@ Optionally pre-assign keys:
 powershell.exe -ExecutionPolicy Bypass -File install.ps1 -CaptureHotkey "S, Shift, Alt" -ClipboardHotkey "V, Shift, Alt"
 ```
 
+Want to also upload to a self-hosted image server? See [Zipline (Self-Hosted Image Upload)](#zipline-self-hosted-image-upload).
+
 Scripts are copied to `%APPDATA%\clip2path\` — you can delete the repo folder after install:
 
 ```powershell
@@ -83,9 +85,25 @@ If you run [Zipline](https://github.com/diced/zipline) on your own server, you c
 
 ### Script Setup
 
-Close ShareX first, then run one of:
+If you haven't already cloned the repo:
 
-Basic (assign keys in ShareX afterward):
+```powershell
+git clone https://github.com/cybersader/sharex-clip2path.git
+```
+
+```powershell
+cd sharex-clip2path
+```
+
+Close ShareX first (right-click tray icon > Exit).
+
+**Interactive** — PowerShell will prompt you for URL and token:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1
+```
+
+**One-liner** — pass everything inline:
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "http://192.168.1.28:3000" -Token "your-upload-token"
@@ -101,6 +119,16 @@ Also save locally:
 
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "http://192.168.1.28:3000" -Token "your-upload-token" -SaveLocally
+```
+
+Clean up repo folder after install:
+
+```powershell
+cd ..
+```
+
+```powershell
+Remove-Item -Recurse -Force sharex-clip2path
 ```
 
 Get your upload token from Zipline's web UI → Settings → Upload Token.
