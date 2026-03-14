@@ -83,8 +83,8 @@ $newUploader = [PSCustomObject]@{
     }
     Body = "MultipartFormData"
     FileFormName = "file"
-    URL = "{json:files[0]}"
-    ThumbnailURL = "{json:files[0]}"
+    URL = "{json:files[0].url}"
+    ThumbnailURL = "{json:files[0].url}"
     ErrorMessage = "{json:error}"
 }
 
