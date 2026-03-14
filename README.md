@@ -88,7 +88,9 @@ If you run [Zipline](https://github.com/diced/zipline) on your own server, you c
 You'll need two things from your Zipline instance:
 
 1. **Zipline URL** — The address of your Zipline server (e.g., `http://img.home`, `http://192.168.1.28:3000`). Paths like `/dashboard` are stripped automatically.
-2. **Upload Token** — Found in Zipline's web UI → **Settings** → **Upload Token** (or generate one there).
+2. **Upload Token** — In Zipline's web UI, either:
+   - Click your **user avatar** (top right) → copy the token from the modal
+   - Or go to **Settings** → **User** section → click **Reveal** on the token box and copy it
 
 ### Script Setup
 
