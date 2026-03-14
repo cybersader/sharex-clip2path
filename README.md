@@ -83,6 +83,13 @@ Removes all clip2path hotkey entries (including Zipline), the custom uploader, a
 
 If you run [Zipline](https://github.com/diced/zipline) on your own server, you can add hotkeys that upload to Zipline and copy the private URL.
 
+### Prerequisites
+
+You'll need two things from your Zipline instance:
+
+1. **Zipline URL** — The address of your Zipline server (e.g., `http://img.home`, `http://192.168.1.28:3000`). Paths like `/dashboard` are stripped automatically.
+2. **Upload Token** — Found in Zipline's web UI → **Settings** → **Upload Token** (or generate one there).
+
 ### Script Setup
 
 If you haven't already cloned the repo:
@@ -130,8 +137,6 @@ cd ..
 ```powershell
 Remove-Item -Recurse -Force sharex-clip2path
 ```
-
-Get your upload token from Zipline's web UI → Settings → Upload Token.
 
 This adds two more hotkeys:
 
