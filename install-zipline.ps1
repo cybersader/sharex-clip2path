@@ -7,23 +7,14 @@
 # Run: powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "https://your-zipline" -Token "your-token"
 
 param(
-    [Parameter(Mandatory=$true)]
     [string]$ZiplineUrl,
-
-    [Parameter(Mandatory=$true)]
     [string]$Token,
-
     [string]$CaptureHotkey = "None",
     [string]$ClipboardHotkey = "None",
-
     [switch]$SaveLocally
 )
 
-# Normalize URL — strip paths like /dashboard, /api, etc. down to scheme://host:port
-$uri = [System.Uri]$ZiplineUrl
-$ZiplineUrl = "$($uri.Scheme)://$($uri.Authority)"
-
-# Check ShareX is not running
+# Check ShareX is not running (do this before reading config)
 $sharex = Get-Process -Name "ShareX" -ErrorAction SilentlyContinue
 if ($sharex) {
     Write-Host "ERROR: ShareX is running. Please close it first." -ForegroundColor Red
@@ -59,13 +50,47 @@ if (-not (Test-Path $uploadersConfigPath)) {
     exit 1
 }
 
+# --- Try to reuse existing config if URL/Token not provided ---
+$uploadersConfig = Get-Content $uploadersConfigPath -Raw | ConvertFrom-Json
+$existingUploader = $uploadersConfig.CustomUploadersList | Where-Object { $_.Name -eq "clip2path-zipline" } | Select-Object -First 1
+
+if ($existingUploader) {
+    if (-not $ZiplineUrl) {
+        # Extract base URL from existing RequestURL (strip /api/upload)
+        $existingUrl = $existingUploader.RequestURL -replace '/api/upload$', ''
+        $ZiplineUrl = $existingUrl
+        Write-Host "Reusing existing Zipline URL: $ZiplineUrl" -ForegroundColor Gray
+    }
+    if (-not $Token) {
+        $Token = $existingUploader.Headers.Authorization
+        Write-Host "Reusing existing Zipline token." -ForegroundColor Gray
+    }
+}
+
+# Prompt if still missing
+if (-not $ZiplineUrl) {
+    $ZiplineUrl = Read-Host "Zipline URL (e.g., http://img.home)"
+}
+if (-not $Token) {
+    $Token = Read-Host "Zipline upload token"
+}
+
+if (-not $ZiplineUrl -or -not $Token) {
+    Write-Host "ERROR: Zipline URL and Token are required." -ForegroundColor Red
+    exit 1
+}
+
+# Normalize URL — strip paths like /dashboard down to scheme://host:port
+$uri = [System.Uri]$ZiplineUrl
+$ZiplineUrl = "$($uri.Scheme)://$($uri.Authority)"
+
 # --- Backup configs ---
 Copy-Item $hotkeysConfigPath "$hotkeysConfigPath.bak" -Force
 Copy-Item $uploadersConfigPath "$uploadersConfigPath.bak" -Force
 Write-Host "Backed up ShareX configs." -ForegroundColor Green
 
 # --- Add custom uploader to UploadersConfig.json ---
-$uploadersConfig = Get-Content $uploadersConfigPath -Raw | ConvertFrom-Json
+# (already loaded above)
 
 # Remove existing clip2path-zipline uploader if present
 $uploaderName = "clip2path-zipline"
