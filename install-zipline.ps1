@@ -19,8 +19,9 @@ param(
     [switch]$SaveLocally
 )
 
-# Normalize URL (remove trailing slash)
-$ZiplineUrl = $ZiplineUrl.TrimEnd('/')
+# Normalize URL — strip paths like /dashboard, /api, etc. down to scheme://host:port
+$uri = [System.Uri]$ZiplineUrl
+$ZiplineUrl = "$($uri.Scheme)://$($uri.Authority)"
 
 # Check ShareX is not running
 $sharex = Get-Process -Name "ShareX" -ErrorAction SilentlyContinue
