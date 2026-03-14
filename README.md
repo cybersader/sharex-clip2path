@@ -53,11 +53,19 @@ Optionally pre-assign keys:
 powershell.exe -ExecutionPolicy Bypass -File install.ps1 -CaptureHotkey "S, Shift, Alt" -ClipboardHotkey "V, Shift, Alt"
 ```
 
-Scripts are copied to `%APPDATA%\clip2path\` — you can delete the repo folder after install.
+Scripts are copied to `%APPDATA%\clip2path\` — you can delete the repo folder after install:
+
+```powershell
+cd ..
+```
+
+```powershell
+Remove-Item -Recurse -Force sharex-clip2path
+```
 
 ### Upgrading
 
-Re-run `install.ps1`. Your `config.json` is preserved.
+Re-clone and re-run `install.ps1`. Your `config.json` is preserved.
 
 ### Uninstall
 
