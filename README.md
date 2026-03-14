@@ -33,17 +33,22 @@ No keys are assigned by default — you pick your own in ShareX to avoid conflic
 
 ```powershell
 git clone https://github.com/cybersader/sharex-clip2path.git
-cd sharex-clip2path
-
-# Close ShareX first (right-click tray icon > Exit)
-
-# Run installer
-powershell.exe -ExecutionPolicy Bypass -File install.ps1
-
-# Open ShareX > Hotkey Settings > assign keys to the new entries
 ```
 
+```powershell
+cd sharex-clip2path
+```
+
+Close ShareX first (right-click tray icon > Exit), then run the installer:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File install.ps1
+```
+
+Open ShareX > Hotkey Settings > assign keys to the new entries.
+
 Optionally pre-assign keys:
+
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File install.ps1 -CaptureHotkey "S, Shift, Alt" -ClipboardHotkey "V, Shift, Alt"
 ```
@@ -56,8 +61,9 @@ Re-run `install.ps1`. Your `config.json` is preserved.
 
 ### Uninstall
 
+Close ShareX first, then:
+
 ```powershell
-# Close ShareX first
 powershell.exe -ExecutionPolicy Bypass -File uninstall.ps1
 ```
 
@@ -69,16 +75,23 @@ If you run [Zipline](https://github.com/diced/zipline) on your own server, you c
 
 ### Script Setup
 
+Close ShareX first, then run one of:
+
+Basic (assign keys in ShareX afterward):
+
 ```powershell
-# Close ShareX first
-
-# Basic (assign keys in ShareX afterward)
 powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "http://192.168.1.28:3000" -Token "your-upload-token"
+```
 
-# With pre-assigned keys
+With pre-assigned keys:
+
+```powershell
 powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "http://192.168.1.28:3000" -Token "your-upload-token" -CaptureHotkey "Z, Shift, Alt" -ClipboardHotkey "X, Shift, Alt"
+```
 
-# Also save locally
+Also save locally:
+
+```powershell
 powershell.exe -ExecutionPolicy Bypass -File install-zipline.ps1 -ZiplineUrl "http://192.168.1.28:3000" -Token "your-upload-token" -SaveLocally
 ```
 
