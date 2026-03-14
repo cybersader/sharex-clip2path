@@ -92,6 +92,11 @@ You'll need two things from your Zipline instance:
    - Click your **user avatar** (top right) → copy the token from the modal
    - Or go to **Settings** → **User** section → click **Reveal** on the token box and copy it
 
+> **Copy buttons not working?** Browsers block clipboard access on non-HTTPS pages. If you're accessing Zipline over plain HTTP (common on LANs), the copy buttons will silently fail. Workarounds:
+> - Manually select the token text and Ctrl+C
+> - In Chrome: go to `chrome://flags/#unsafely-treat-insecure-origin-as-secure`, add your Zipline URL, restart
+> - Set up HTTPS for Zipline (reverse proxy or Tailscale HTTPS)
+
 ### Script Setup
 
 If you haven't already cloned the repo:
